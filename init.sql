@@ -206,3 +206,51 @@ INSERT INTO creneaux (id_emploi, id_matiere, id_enseignant, id_salle, jour, heur
 (3, 3, 5, 3, 'Lundi', '08:00:00', '10:00:00'),
 (3, 1, 6, 1, 'Mardi', '14:00:00', '16:00:00'),
 (3, 2, 3, 2, 'Mercredi', '08:00:00', '10:00:00');
+
+
+<?php
+$host = "localhost";
+$db_name = "eduschedule_db";
+$username = "root";
+$password = "";
+
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    echo "Erreur connexion : " . $e->getMessage();
+}
+?>
+
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type");
+?>
+
+<?php
+include_once "../config/database.php";
+include_once "../config/cors.php";
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    $stmt = $conn->query("SELECT * FROM classes");
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $data = json_decode(file_get_contents("php://input"));
+
+    $query = "INSERT INTO classes (code, libelle, niveau)
+              VALUES (:code, :libelle, :niveau)";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->execute([
+        ":code" => $data->code,
+        ":libelle" => $data->libelle,
+        ":niveau" => $data->niveau
+    ]);
+
+    echo json_encode(["message" => "Classe ajoutée"]);
+}
+?>
