@@ -154,7 +154,7 @@ CREATE TABLE logs_activite (
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );*/
 
--- INTSER: ajout des données
+-- INTSER: ajout des tests données
 
 
 INSERT INTO classes (code, libelle, niveau) VALUES
