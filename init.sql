@@ -154,7 +154,9 @@ CREATE TABLE logs_activite (
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );*/
 
--- INTSER: ajout des données de test
+-- INTSER: ajout des données
+
+
 INSERT INTO classes (code, libelle, niveau) VALUES
 ('L1', 'Licence 1 RIT', 'L1'),
 ('L2', 'Licence 2 RIT', 'L2'),
@@ -167,12 +169,16 @@ INSERT INTO matieres (code, libelle) VALUES
 ('WEB', 'Développement Web');
 
 
-INSERT INTO enseignants (nom, prenom, email, taux_horaire, mot_de_passe) VALUES
-('Traore', 'Ali', 'ali@mail.com', 5000, MD5('password123')),
-('Ouédraogo', 'Mariam', 'mariam@mail.com', 6000, MD5('password123')),
-('Zongo', 'Paul', 'paul@mail.com', 5500, MD5('password123')),
-('Kaboré', 'Jean', 'jean@mail.com', 5000, MD5('password123')),
-('Sawadogo', 'Awa', 'awa@mail.com', 6500, MD5('password123'));
+INSERT INTO users (nom, prenom, email, mot_de_passe, role, taux_horaire, id_classe) VALUES
+('Admin', 'System', 'admin@eduschedule.com', MD5('admin123'), 'admin', NULL, NULL),
+('Traore', 'Ali', 'ali@mail.com', MD5('password123'), 'enseignant', 5000, NULL),
+('Ouédraogo', 'Mariam', 'mariam@mail.com', MD5('password123'), 'enseignant', 6000, NULL),
+('Zongo', 'Paul', 'paul@mail.com', MD5('password123'), 'enseignant', 5500, NULL),
+('Kaboré', 'Jean', 'jean@mail.com', MD5('password123'), 'enseignant', 5000, NULL),
+('Sawadogo', 'Awa', 'awa@mail.com', MD5('password123'), 'enseignant', 6500, NULL),
+('Compaoré', 'Issa', 'delegue.l1@mail.com', MD5('delegue123'), 'delegue', NULL, 1),
+('Ouedraogo', 'Fatou', 'delegue.l2@mail.com', MD5('delegue123'), 'delegue', NULL, 2),
+('Traore', 'Moussa', 'delegue.l3@mail.com', MD5('delegue123'), 'delegue', NULL, 3);
 
 
 INSERT INTO salles (code, capacite) VALUES
@@ -182,29 +188,21 @@ INSERT INTO salles (code, capacite) VALUES
 
 
 INSERT INTO emploi_temps (id_classe, semaine_debut) VALUES
-(1, '2025-01-06'),  -- L1
-(2, '2025-01-06'),  -- L2
-(3, '2025-01-06');  -- L3
+(1, '2025-01-06'),
+(2, '2025-01-06'),
+(3, '2025-01-06');
 
 
 INSERT INTO creneaux (id_emploi, id_matiere, id_enseignant, id_salle, jour, heure_debut, heure_fin) VALUES
---L1
-(1, 1, 1, 1, 'Lundi', '08:00:00', '10:00:00'),
-(1, 2, 2, 2, 'Mardi', '10:00:00', '12:00:00'),
-(1, 3, 3, 3, 'Mercredi', '14:00:00', '16:00:00'),
-(1, 1, 1, 1, 'Jeudi', '08:00:00', '10:00:00'),
-(1, 2, 2, 2, 'Vendredi', '14:00:00', '16:00:00'),
-
--- L2 
-(2, 2, 2, 2, 'Lundi', '14:00:00', '16:00:00'),
-(2, 1, 5, 1, 'Mardi', '08:00:00', '10:00:00'),
-(2, 3, 3, 3, 'Mercredi', '10:00:00', '12:00:00'),
-(2, 2, 4, 2, 'Jeudi', '08:00:00', '10:00:00'),
-(2, 1, 1, 1, 'Vendredi', '10:00:00', '12:00:00'),
-
+-- L1 
+(1, 1, 2, 1, 'Lundi', '08:00:00', '10:00:00'),
+(1, 2, 3, 2, 'Mardi', '10:00:00', '12:00:00'),
+(1, 3, 4, 3, 'Mercredi', '14:00:00', '16:00:00'),
+-- L2
+(2, 2, 3, 2, 'Lundi', '14:00:00', '16:00:00'),
+(2, 1, 6, 1, 'Mardi', '08:00:00', '10:00:00'),
+(2, 3, 4, 3, 'Mercredi', '10:00:00', '12:00:00'),
 -- L3
-(3, 3, 4, 3, 'Lundi', '08:00:00', '10:00:00'),
-(3, 1, 5, 1, 'Mardi', '14:00:00', '16:00:00'),
-(3, 2, 2, 2, 'Mercredi', '08:00:00', '10:00:00'),
-(3, 3, 3, 3, 'Jeudi', '14:00:00', '16:00:00'),
-(3, 1, 1, 1, 'Vendredi', '08:00:00', '10:00:00');
+(3, 3, 5, 3, 'Lundi', '08:00:00', '10:00:00'),
+(3, 1, 6, 1, 'Mardi', '14:00:00', '16:00:00'),
+(3, 2, 3, 2, 'Mercredi', '08:00:00', '10:00:00');
