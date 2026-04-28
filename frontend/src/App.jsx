@@ -8,7 +8,7 @@ export default function App() {
       <div className="d-flex">
         <Sidebar />
         <div className="p-4">
-          <h1>🎓 EduSchedule Pro</h1>
+          <h1>🎓 EduSchedule-Pro</h1>
         </div>
       </div>
     </div>
