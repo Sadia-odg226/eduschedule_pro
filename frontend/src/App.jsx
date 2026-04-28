@@ -1,16 +1,10 @@
-import Navbar from './components/Navbar'
-import Sidebar from './components/Sidebar'
+import Layout from './components/Layout'
 
 export default function App() {
   return (
-    <div>
-      <Navbar />
-      <div className="d-flex">
-        <Sidebar />
-        <div className="p-4">
-          <h1>🎓 EduSchedule-Pro</h1>
-        </div>
-      </div>
-    </div>
+    <Layout>
+      <h1 className="text-primary">🎓 EduSchedule Pro</h1>
+      <p>Application en cours de construction...</p>
+    </Layout>
   )
 }
