@@ -1,26 +1,10 @@
 <?php
-include_once "../config/database.php";
-include_once "../config/cors.php";
+header("Content-Type: application/json");
 
-$methode = $_SERVER['REQUEST_METHOD'];
+// Simulation de données
+$classes = [
+    ["id" => 1, "nom" => "Ingénieur des Travaux - RT", "niveau" => "L3"],
+    ["id" => 2, "nom" => "Génie Électrique", "niveau" => "L2"]
+];
 
-if ($methode == 'GET') {
-    $stmt = $conn->query("SELECT * FROM classes");
-    $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($classes);
-}
-
-if ($methode == 'POST') {
-    $data = json_decode(file_get_contents("php://input"));
-    $stmt = $conn->prepare(
-        "INSERT INTO classes (code, libelle, annee_academique) 
-         VALUES (:code, :libelle, :annee)"
-    );
-    $stmt->execute([
-        ':code' => $data->code,
-        ':libelle' => $data->libelle,
-        ':annee' => $data->annee_academique
-    ]);
-    echo json_encode(["message" => "Classe créée avec succès"]);
-}
-?>
+echo json_encode($classes);

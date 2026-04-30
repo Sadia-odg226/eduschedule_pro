@@ -1,22 +1,18 @@
 <?php
-// Utilitaire pour générer et valider les codes QR
 require_once '../config/database.php';
 
-// Classe pour gérer les codes QR
 class QRCodeGenerator {
     private $conn;
 
-    // Constructeur
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
-    // Générer un code QR pour un créneau
     public function generateForCreneau($creneauId) {
-        // Générer un token unique et aléatoire
+        // Générer un token unique
         $token = $this->generateToken();
 
-        // Récupérer l'heure de début du créneau pour calculer l'expiration
+        // Définir l'expiration (par exemple, 2 heures après le début du créneau)
         $stmt = $this->conn->prepare("SELECT heure_debut FROM creneaux WHERE id = ?");
         $stmt->bind_param("i", $creneauId);
         $stmt->execute();
@@ -27,17 +23,15 @@ class QRCodeGenerator {
         }
 
         $creneau = $result->fetch_assoc();
-        // Calculer le timestamp de l'heure de début
         $heureDebut = strtotime($creneau['heure_debut']);
-        // Ajouter 2 heures pour l'expiration
-        $expiration = date('Y-m-d H:i:s', $heureDebut + 7200);
+        $expiration = date('Y-m-d H:i:s', $heureDebut + 7200); // +2 heures
 
         // Mettre à jour le créneau avec le token et l'expiration
         $updateStmt = $this->conn->prepare("UPDATE creneaux SET qr_token = ?, qr_expire = ? WHERE id = ?");
         $updateStmt->bind_param("ssi", $token, $expiration, $creneauId);
 
         if ($updateStmt->execute()) {
-            // Préparer les données du QR code en JSON
+            // Générer le QR code
             $qrData = json_encode([
                 'creneau_id' => $creneauId,
                 'token' => $token,
@@ -55,9 +49,7 @@ class QRCodeGenerator {
         }
     }
 
-    // Valider un token de QR code
     public function validateToken($token) {
-        // Chercher le créneau avec ce token
         $stmt = $this->conn->prepare("SELECT id, qr_expire FROM creneaux WHERE qr_token = ?");
         $stmt->bind_param("s", $token);
         $stmt->execute();
@@ -68,7 +60,6 @@ class QRCodeGenerator {
         }
 
         $creneau = $result->fetch_assoc();
-        // Vérifier l'expiration du token
         $now = time();
         $expire = strtotime($creneau['qr_expire']);
 
@@ -79,25 +70,23 @@ class QRCodeGenerator {
         return ["valid" => true, "creneau_id" => $creneau['id']];
     }
 
-    // Générer un token aléatoire
     private function generateToken() {
-        // Générer 32 bytes aléatoires et les convertir en hexadécimal
         return bin2hex(random_bytes(32));
     }
 }
 
-// Fonction utilitaire pour générer une image QR code en base64
+// Fonction utilitaire pour générer un QR code en base64
 function generateQRCodeImage($data, $size = 200) {
     // Utiliser une bibliothèque QR code comme phpqrcode si disponible
-    // Pour ce prototype, on utilise l'API Google Charts
+    // Pour cet exemple, on retourne juste les données
+    // En production, installer une bibliothèque QR code
 
-    // Créer l'URL de l'API Google Charts
+    // Exemple avec une URL d'API Google Charts (non recommandé pour production)
     $url = "https://chart.googleapis.com/chart?chs={$size}x{$size}&cht=qr&chl=" . urlencode($data);
 
     // Récupérer l'image et la convertir en base64
     $imageData = file_get_contents($url);
     if ($imageData) {
-        // Retourner en format data URI pour afficher dans une image HTML
         return "data:image/png;base64," . base64_encode($imageData);
     }
 

@@ -1,11 +1,4 @@
 <?php
-<<<<<<< HEAD
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-?>
-=======
 // Configuration CORS pour autoriser les requêtes du frontend
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -17,4 +10,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 ?>
->>>>>>> 7992188c6da92f51abc4e37c5435bb138f034f47

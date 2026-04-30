@@ -1,30 +1,17 @@
 <?php
-include_once "../config/database.php";
-include_once "../config/cors.php";
+header("Content-Type: application/json");
+require_once '../db_config.php'; 
 
-$methode = $_SERVER['REQUEST_METHOD'];
+try {
+    // On récupère tous les enseignants de la table
+    $requete = $pdo->query("SELECT * FROM enseignants");
+    $resultats = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-if ($methode == 'GET') {
-    $stmt = $conn->query("SELECT * FROM enseignants");
-    $enseignants = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($enseignants);
-}
+    // On affiche le résultat en JSON
+    echo json_encode($resultats);
 
-if ($methode == 'POST') {
-    $data = json_decode(file_get_contents("php://input"));
-    $stmt = $conn->prepare(
-        "INSERT INTO enseignants 
-         (matricule, nom, prenom, email, specialite, statut, taux_horaire) 
-         VALUES (:matricule, :nom, :prenom, :email, :specialite, :statut, :taux)"
-    );
-    $stmt->execute([
-        ':matricule' => $data->matricule,
-        ':nom' => $data->nom,
-        ':prenom' => $data->prenom,
-        ':email' => $data->email,
-        ':specialite' => $data->specialite,
-        ':statut' => $data->statut,
-        ':taux' => $data->taux_horaire
-    ]);
+} catch (Exception $e) {
+    // Si la table n'existe pas ou s'il y a une erreur SQL
+    echo json_encode(["erreur" => $e->getMessage()]);
 }
 ?>

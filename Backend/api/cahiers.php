@@ -1,15 +1,11 @@
 <?php
-// API pour gérer les cahiers de texte
 header("Content-Type: application/json");
-require_once '../config/cors.php';
 require_once '../config/database.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Traiter les différentes méthodes HTTP
 switch ($method) {
     case 'GET':
-        // Récupérer un cahier ou tous les cahiers
         if (isset($_GET['id'])) {
             getCahier($conn, $_GET['id']);
         } elseif (isset($_GET['id_creneau'])) {
@@ -19,24 +15,19 @@ switch ($method) {
         }
         break;
     case 'POST':
-        // Créer un nouveau cahier
         createCahier($conn);
         break;
     case 'PUT':
-        // Modifier un cahier
         updateCahier($conn);
         break;
     case 'DELETE':
-        // Supprimer un cahier
         deleteCahier($conn);
         break;
     default:
         echo json_encode(["error" => "Méthode non supportée"]);
 }
 
-// Fonction pour récupérer tous les cahiers
 function getCahiers($conn) {
-    // Requête SQL avec jointures
     $sql = "SELECT ct.*, c.jour, c.heure_debut, c.heure_fin, m.libelle as matiere, e.nom, e.prenom
             FROM cahiers_texte ct
             LEFT JOIN creneaux c ON ct.id_creneau = c.id
@@ -53,7 +44,6 @@ function getCahiers($conn) {
     echo json_encode($cahiers);
 }
 
-// Fonction pour récupérer un cahier spécifique
 function getCahier($conn, $id) {
     $stmt = $conn->prepare("SELECT ct.*, c.jour, c.heure_debut, c.heure_fin, m.libelle as matiere, e.nom, e.prenom
                             FROM cahiers_texte ct
@@ -73,7 +63,6 @@ function getCahier($conn, $id) {
     $stmt->close();
 }
 
-// Fonction pour récupérer les cahiers d'un créneau
 function getCahiersByCreneau($conn, $id_creneau) {
     $stmt = $conn->prepare("SELECT * FROM cahiers_texte WHERE id_creneau = ? ORDER BY date_creation DESC");
     $stmt->bind_param("i", $id_creneau);
@@ -89,11 +78,9 @@ function getCahiersByCreneau($conn, $id_creneau) {
     $stmt->close();
 }
 
-// Fonction pour créer un nouveau cahier
 function createCahier($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Vérifier les champs requis
     $required = ['id_creneau', 'titre_cours', 'contenu_json', 'statut'];
     foreach ($required as $field) {
         if (!isset($data[$field])) {
@@ -102,15 +89,11 @@ function createCahier($conn) {
         }
     }
 
-    // Les champs optionnels
     $id_delegue = isset($data['id_delegue']) ? $data['id_delegue'] : null;
     $heure_fin_reelle = isset($data['heure_fin_reelle']) ? $data['heure_fin_reelle'] : null;
 
-    // Insérer le cahier
-    $stmt = $conn->prepare("INSERT INTO cahiers_texte (id_creneau, id_delegue, titre_cours, contenu_json, heure_fin_reelle, statut) 
-                            VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("iissss", $data['id_creneau'], $id_delegue, $data['titre_cours'], $data['contenu_json'], 
-                      $heure_fin_reelle, $data['statut']);
+    $stmt = $conn->prepare("INSERT INTO cahiers_texte (id_creneau, id_delegue, titre_cours, contenu_json, heure_fin_reelle, statut) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iissss", $data['id_creneau'], $id_delegue, $data['titre_cours'], $data['contenu_json'], $heure_fin_reelle, $data['statut']);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "id" => $stmt->insert_id]);
@@ -120,7 +103,6 @@ function createCahier($conn) {
     $stmt->close();
 }
 
-// Fonction pour modifier un cahier
 function updateCahier($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -129,7 +111,6 @@ function updateCahier($conn) {
         return;
     }
 
-    // Construire la requête dynamiquement
     $fields = ['id_creneau', 'id_delegue', 'titre_cours', 'contenu_json', 'heure_fin_reelle', 'statut'];
     $updates = [];
     $types = "";
@@ -163,7 +144,6 @@ function updateCahier($conn) {
     $stmt->close();
 }
 
-// Fonction pour supprimer un cahier
 function deleteCahier($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 

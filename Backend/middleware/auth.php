@@ -1,22 +1,15 @@
 <?php
-// Middleware d'authentification pour les requêtes protégées
-// Utilise des tokens JWT (simplifié ici)
-
 require_once '../config/database.php';
 
-// Fonction pour vérifier l'authentification
 function checkAuth($conn) {
-    // Récupérer tous les en-têtes HTTP
     $headers = getallheaders();
 
-    // Vérifier si le token d'autorisation est présent
     if (!isset($headers['Authorization'])) {
         http_response_code(401);
         echo json_encode(["error" => "Token d'autorisation manquant"]);
         exit();
     }
 
-    // Extraire le token du format "Bearer TOKEN"
     $authHeader = $headers['Authorization'];
     if (!preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
         http_response_code(401);
@@ -26,7 +19,8 @@ function checkAuth($conn) {
 
     $token = $matches[1];
 
-    // Vérifier le token (implémentation simple)
+    // Pour cet exemple, on suppose que le token est l'ID utilisateur hashé
+    // En production, utiliser JWT ou un système plus robuste
     $userId = verifyToken($token);
 
     if (!$userId) {
@@ -35,7 +29,7 @@ function checkAuth($conn) {
         exit();
     }
 
-    // Vérifier que l'utilisateur existe et est actif
+    // Vérifier si l'utilisateur existe et est actif
     $stmt = $conn->prepare("SELECT id, email, role, actif FROM utilisateurs WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
@@ -58,14 +52,13 @@ function checkAuth($conn) {
     return $user;
 }
 
-// Fonction pour vérifier la validité d'un token
 function verifyToken($token) {
     // Implémentation simple : le token est l'ID utilisateur hashé avec un sel
-    // À améliorer avec JWT en production
+    // En production, utiliser JWT
     $salt = "eduschedule_salt_2024";
-    
-    // Essayer les IDs de 1 à 100 (pour la démo)
-    for ($userId = 1; $userId <= 100; $userId++) {
+    $users = [1, 2, 3]; // IDs d'exemple
+
+    foreach ($users as $userId) {
         if (hash('sha256', $userId . $salt) === $token) {
             return $userId;
         }
@@ -74,13 +67,11 @@ function verifyToken($token) {
     return false;
 }
 
-// Fonction pour générer un token
 function generateToken($userId) {
     $salt = "eduschedule_salt_2024";
     return hash('sha256', $userId . $salt);
 }
 
-// Fonction pour vérifier le rôle de l'utilisateur
 function requireRole($user, $requiredRole) {
     if ($user['role'] !== $requiredRole) {
         http_response_code(403);

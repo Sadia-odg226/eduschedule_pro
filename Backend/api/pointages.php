@@ -1,15 +1,11 @@
 <?php
-// API pour gérer les pointages (attendances)
 header("Content-Type: application/json");
-require_once '../config/cors.php';
 require_once '../config/database.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Traiter les différentes méthodes HTTP
 switch ($method) {
     case 'GET':
-        // Récupérer un pointage ou tous les pointages
         if (isset($_GET['id'])) {
             getPointage($conn, $_GET['id']);
         } elseif (isset($_GET['id_creneau'])) {
@@ -19,24 +15,19 @@ switch ($method) {
         }
         break;
     case 'POST':
-        // Créer un nouveau pointage
         createPointage($conn);
         break;
     case 'PUT':
-        // Modifier un pointage
         updatePointage($conn);
         break;
     case 'DELETE':
-        // Supprimer un pointage
         deletePointage($conn);
         break;
     default:
         echo json_encode(["error" => "Méthode non supportée"]);
 }
 
-// Fonction pour récupérer tous les pointages
 function getPointages($conn) {
-    // Requête SQL avec jointures pour récupérer infos complètes
     $sql = "SELECT p.*, c.jour, c.heure_debut, c.heure_fin, m.libelle as matiere
             FROM pointages p
             LEFT JOIN creneaux c ON p.id_creneau = c.id
@@ -52,7 +43,6 @@ function getPointages($conn) {
     echo json_encode($pointages);
 }
 
-// Fonction pour récupérer un pointage spécifique
 function getPointage($conn, $id) {
     $stmt = $conn->prepare("SELECT p.*, c.jour, c.heure_debut, c.heure_fin, m.libelle as matiere
                             FROM pointages p
@@ -71,7 +61,6 @@ function getPointage($conn, $id) {
     $stmt->close();
 }
 
-// Fonction pour récupérer les pointages d'un créneau
 function getPointagesByCreneau($conn, $id_creneau) {
     $stmt = $conn->prepare("SELECT * FROM pointages WHERE id_creneau = ? ORDER BY heure_pointage_reelle DESC");
     $stmt->bind_param("i", $id_creneau);
@@ -87,11 +76,9 @@ function getPointagesByCreneau($conn, $id_creneau) {
     $stmt->close();
 }
 
-// Fonction pour créer un nouveau pointage
 function createPointage($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Vérifier les champs requis
     $required = ['id_creneau', 'token_utilise', 'statut'];
     foreach ($required as $field) {
         if (!isset($data[$field])) {
@@ -100,14 +87,10 @@ function createPointage($conn) {
         }
     }
 
-    // Utiliser l'heure actuelle si non fournie
     $heure_pointage = isset($data['heure_pointage_reelle']) ? $data['heure_pointage_reelle'] : date('Y-m-d H:i:s');
-    // Récupérer l'IP source
     $ip_source = $_SERVER['REMOTE_ADDR'];
 
-    // Insérer le pointage
-    $stmt = $conn->prepare("INSERT INTO pointages (id_creneau, heure_pointage_reelle, ip_source, token_utilise, statut) 
-                            VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO pointages (id_creneau, heure_pointage_reelle, ip_source, token_utilise, statut) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("issss", $data['id_creneau'], $heure_pointage, $ip_source, $data['token_utilise'], $data['statut']);
 
     if ($stmt->execute()) {
@@ -118,7 +101,6 @@ function createPointage($conn) {
     $stmt->close();
 }
 
-// Fonction pour modifier un pointage
 function updatePointage($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -127,7 +109,6 @@ function updatePointage($conn) {
         return;
     }
 
-    // Construire la requête dynamiquement
     $fields = ['id_creneau', 'heure_pointage_reelle', 'ip_source', 'token_utilise', 'statut'];
     $updates = [];
     $types = "";
@@ -161,7 +142,6 @@ function updatePointage($conn) {
     $stmt->close();
 }
 
-// Fonction pour supprimer un pointage
 function deletePointage($conn) {
     $data = json_decode(file_get_contents('php://input'), true);
 
