@@ -1,5 +1,5 @@
-CREATE DATABASE eduschedule_db;
 USE eduschedule_db;
+
 CREATE TABLE classes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20),
@@ -7,6 +7,7 @@ CREATE TABLE classes (
     niveau VARCHAR(50),
     annee_academique VARCHAR(20)
 );
+
 CREATE TABLE matieres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20),
@@ -155,55 +156,51 @@ CREATE TABLE logs_activite (
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- INTSER: ajout des données
-
-
 INSERT INTO classes (code, libelle, niveau) VALUES
 ('L1', 'Licence 1 RIT', 'L1'),
 ('L2', 'Licence 2 RIT', 'L2'),
 ('L3', 'Licence 3 RIT', 'L3');
-
 
 INSERT INTO matieres (code, libelle) VALUES
 ('RES', 'Réseaux'),
 ('BD', 'Base de données'),
 ('WEB', 'Développement Web');
 
+INSERT INTO utilisateurs (email, mot_de_passe_hash, role) VALUES
+('admin@eduschedule.com', MD5('admin123'), 'admin'),
+('ali@mail.com', MD5('password123'), 'enseignant'),
+('mariam@mail.com', MD5('password123'), 'enseignant'),
+('paul@mail.com', MD5('password123'), 'enseignant'),
+('jean@mail.com', MD5('password123'), 'enseignant'),
+('awa@mail.com', MD5('password123'), 'enseignant'),
+('delegue.l1@mail.com', MD5('delegue123'), 'delegue'),
+('delegue.l2@mail.com', MD5('delegue123'), 'delegue'),
+('delegue.l3@mail.com', MD5('delegue123'), 'delegue');
 
-INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, taux_horaire, id_classe) VALUES
-('Admin', 'System', 'admin@eduschedule.com', MD5('admin123'), 'admin', NULL, NULL),
-('Traore', 'Ali', 'ali@mail.com', MD5('password123'), 'enseignant', 5000, NULL),
-('Ouédraogo', 'Mariam', 'mariam@mail.com', MD5('password123'), 'enseignant', 6000, NULL),
-('Zongo', 'Paul', 'paul@mail.com', MD5('password123'), 'enseignant', 5500, NULL),
-('Kaboré', 'Jean', 'jean@mail.com', MD5('password123'), 'enseignant', 5000, NULL),
-('Sawadogo', 'Awa', 'awa@mail.com', MD5('password123'), 'enseignant', 6500, NULL),
-('Compaoré', 'Issa', 'delegue.l1@mail.com', MD5('delegue123'), 'delegue', NULL, 1),
-('Ouedraogo', 'Fatou', 'delegue.l2@mail.com', MD5('delegue123'), 'delegue', NULL, 2),
-('Traore', 'Moussa', 'delegue.l3@mail.com', MD5('delegue123'), 'delegue', NULL, 3);
-
+INSERT INTO enseignants (matricule, nom, prenom, email, statut, taux_horaire) VALUES
+('ENS001', 'Traore', 'Ali', 'ali@mail.com', 'vacataire', 5000),
+('ENS002', 'Ouedraogo', 'Mariam', 'mariam@mail.com', 'permanent', 6000),
+('ENS003', 'Zongo', 'Paul', 'paul@mail.com', 'vacataire', 5500),
+('ENS004', 'Kabore', 'Jean', 'jean@mail.com', 'vacataire', 5000),
+('ENS005', 'Sawadogo', 'Awa', 'awa@mail.com', 'permanent', 6500);
 
 INSERT INTO salles (code, capacite) VALUES
 ('A1', 30),
 ('B1', 40),
 ('C1', 50);
 
-
 INSERT INTO emploi_temps (id_classe, semaine_debut) VALUES
 (1, '2025-01-06'),
 (2, '2025-01-06'),
 (3, '2025-01-06');
 
-
 INSERT INTO creneaux (id_emploi_temps, id_matiere, id_enseignant, id_salle, jour, heure_debut, heure_fin) VALUES
--- L1 
-(1, 1, 2, 1, 'Lundi', '08:00:00', '10:00:00'),
-(1, 2, 3, 2, 'Mardi', '10:00:00', '12:00:00'),
-(1, 3, 4, 3, 'Mercredi', '14:00:00', '16:00:00'),
--- L2
-(2, 2, 3, 2, 'Lundi', '14:00:00', '16:00:00'),
-(2, 1, 6, 1, 'Mardi', '08:00:00', '10:00:00'),
-(2, 3, 4, 3, 'Mercredi', '10:00:00', '12:00:00'),
--- L3
+(1, 1, 1, 1, 'Lundi', '08:00:00', '10:00:00'),
+(1, 2, 2, 2, 'Mardi', '10:00:00', '12:00:00'),
+(1, 3, 3, 3, 'Mercredi', '14:00:00', '16:00:00'),
+(2, 2, 2, 2, 'Lundi', '14:00:00', '16:00:00'),
+(2, 1, 4, 1, 'Mardi', '08:00:00', '10:00:00'),
+(2, 3, 3, 3, 'Mercredi', '10:00:00', '12:00:00'),
 (3, 3, 5, 3, 'Lundi', '08:00:00', '10:00:00'),
-(3, 1, 6, 1, 'Mardi', '14:00:00', '16:00:00'),
-(3, 2, 3, 2, 'Mercredi', '08:00:00', '10:00:00');
+(3, 1, 4, 1, 'Mardi', '14:00:00', '16:00:00'),
+(3, 2, 2, 2, 'Mercredi', '08:00:00', '10:00:00');
