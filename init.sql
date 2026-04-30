@@ -1,9 +1,10 @@
-/*CREATE DATABASE eduschedule_db;
+CREATE DATABASE eduschedule_db;
 USE eduschedule_db;
 CREATE TABLE classes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20),
     libelle VARCHAR(100),
+    niveau VARCHAR(50),
     annee_academique VARCHAR(20)
 );
 CREATE TABLE matieres (
@@ -152,7 +153,7 @@ CREATE TABLE logs_activite (
     details_json TEXT,
     ip VARCHAR(50),
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);*/
+);
 
 -- INTSER: ajout des données
 
@@ -169,7 +170,7 @@ INSERT INTO matieres (code, libelle) VALUES
 ('WEB', 'Développement Web');
 
 
-INSERT INTO users (nom, prenom, email, mot_de_passe, role, taux_horaire, id_classe) VALUES
+INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, taux_horaire, id_classe) VALUES
 ('Admin', 'System', 'admin@eduschedule.com', MD5('admin123'), 'admin', NULL, NULL),
 ('Traore', 'Ali', 'ali@mail.com', MD5('password123'), 'enseignant', 5000, NULL),
 ('Ouédraogo', 'Mariam', 'mariam@mail.com', MD5('password123'), 'enseignant', 6000, NULL),
@@ -193,7 +194,7 @@ INSERT INTO emploi_temps (id_classe, semaine_debut) VALUES
 (3, '2025-01-06');
 
 
-INSERT INTO creneaux (id_emploi, id_matiere, id_enseignant, id_salle, jour, heure_debut, heure_fin) VALUES
+INSERT INTO creneaux (id_emploi_temps, id_matiere, id_enseignant, id_salle, jour, heure_debut, heure_fin) VALUES
 -- L1 
 (1, 1, 2, 1, 'Lundi', '08:00:00', '10:00:00'),
 (1, 2, 3, 2, 'Mardi', '10:00:00', '12:00:00'),
