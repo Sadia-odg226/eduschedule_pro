@@ -1,16 +1,27 @@
+// Importations des dépendances React
 import React, { useRef, useEffect, useState } from 'react';
 
+// Composant pour capturer une signature numérique
 const SignaturePad = ({ onSignatureSave, disabled = false }) => {
+  // Référence pour accéder à l'élément canvas où dessiner
   const canvasRef = useRef(null);
+  
+  // États pour gérer le dessin
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
 
+  // Initialiser le canvas au chargement
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
+      // Obtenir le contexte 2D pour dessiner
       const context = canvas.getContext('2d');
+      
+      // Remplir le canvas de blanc
       context.fillStyle = 'white';
       context.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Configurer les paramètres de dessin (couleur, épaisseur, etc.)
       context.strokeStyle = '#000000';
       context.lineWidth = 2;
       context.lineCap = 'round';
@@ -18,39 +29,58 @@ const SignaturePad = ({ onSignatureSave, disabled = false }) => {
     }
   }, []);
 
+  // Fonction appelée au début du dessin (clic ou toucher)
   const startDrawing = (e) => {
     if (disabled) return;
+    
+    // Activer le mode dessin
     setIsDrawing(true);
     setIsEmpty(false);
+    
+    // Récupérer la position du clic/toucher
     const { offsetX, offsetY } = e.nativeEvent;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+    
+    // Démarrer un nouveau trait
     context.beginPath();
     context.moveTo(offsetX, offsetY);
   };
 
+  // Fonction appelée pendant le dessin (mouvements de la souris/doigt)
   const draw = (e) => {
+    // Ne dessiner que si on est en train de dessiner et non désactivé
     if (!isDrawing || disabled) return;
 
+    // Récupérer la position actuelle du curseur/doigt
     const { offsetX, offsetY } = e.nativeEvent;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+    
+    // Continuer le trait jusqu'à la nouvelle position
     context.lineTo(offsetX, offsetY);
     context.stroke();
   };
 
+  // Fonction appelée quand on arrête de dessiner
   const stopDrawing = () => {
     setIsDrawing(false);
   };
 
+  // Fonction pour effacer la signature
   const clearSignature = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+    
+    // Remplir le canvas de blanc pour effacer
     context.fillStyle = 'white';
     context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Marquer comme vide
     setIsEmpty(true);
   };
 
+  // Fonction pour sauvegarder la signature
   const saveSignature = () => {
     if (isEmpty) {
       alert('Veuillez signer avant de continuer');

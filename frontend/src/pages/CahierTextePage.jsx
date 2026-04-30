@@ -1,9 +1,14 @@
+// Importations des dépendances et composants
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import SignaturePad from '../components/SignaturePad';
 
+// Page pour gérer les cahiers de texte (documents de cours)
 const CahierTextePage = () => {
+  // Récupérer l'utilisateur connecté
   const { user } = useContext(AuthContext);
+  
+  // États pour gérer les cahiers et le formulaire
   const [cahiers, setCahiers] = useState([]);
   const [creneaux, setCreneaux] = useState([]);
   const [selectedCahier, setSelectedCahier] = useState(null);
@@ -11,6 +16,8 @@ const CahierTextePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  
+  // État pour les données du formulaire
   const [formData, setFormData] = useState({
     id_creneau: '',
     titre_cours: '',
@@ -18,13 +25,17 @@ const CahierTextePage = () => {
     statut: 'draft',
     heure_fin_reelle: '',
   });
+  
+  // État pour sauvegarder la signature
   const [signature, setSignature] = useState(null);
 
+  // Charger les cahiers et créneaux au démarrage
   useEffect(() => {
     fetchCahiers();
     fetchCreneaux();
   }, []);
 
+  // Fonction pour récupérer les cahiers depuis l'API
   const fetchCahiers = async () => {
     setLoading(true);
     try {

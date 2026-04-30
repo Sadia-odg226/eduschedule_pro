@@ -1,9 +1,14 @@
+// Importations des dépendances et composants
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import QRScanner from '../components/QRScanner';
 
+// Page pour gérer les pointages (attendances) des étudiants
 const PointagePage = () => {
+  // Récupérer l'utilisateur connecté
   const { user } = useContext(AuthContext);
+  
+  // États pour gérer les créneaux et pointages
   const [creneaux, setCreneaux] = useState([]);
   const [selectedCreneau, setSelectedCreneau] = useState(null);
   const [pointages, setPointages] = useState([]);
@@ -12,15 +17,20 @@ const PointagePage = () => {
   const [success, setSuccess] = useState(null);
   const [scanning, setScanning] = useState(false);
 
+  // Charger les créneaux au démarrage de la page
   useEffect(() => {
     fetchCreneaux();
   }, []);
 
+  // Fonction pour récupérer les créneaux depuis l'API
   const fetchCreneaux = async () => {
     setLoading(true);
     try {
+      // Appeler l'API pour récupérer les créneaux
       const response = await fetch('http://localhost/eduschedule_pro/Backend/api/creneaux.php');
       const data = await response.json();
+      
+      // Vérifier que c'est un tableau avant de stocker
       setCreneaux(Array.isArray(data) ? data : []);
     } catch (err) {
       setError('Erreur lors du chargement des créneaux: ' + err.message);

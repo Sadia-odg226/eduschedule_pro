@@ -1,26 +1,43 @@
+// Importations des dépendances et composants
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
+// Page de connexion/inscription
 const LoginPage = () => {
+  // États pour gérer le formulaire
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // État pour basculer entre connexion et inscription
   const [isLogin, setIsLogin] = useState(true);
+  
+  // Rôle par défaut pour les nouvelles inscriptions
   const [role, setRole] = useState('student');
+  
+  // Récupérer les fonctions d'authentification du contexte
   const { login, register, error, loading } = useContext(AuthContext);
+  
+  // Hook pour naviguer après connexion réussie
   const navigate = useNavigate();
 
+  // Gérer la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Vérifier si c'est une connexion ou inscription
     if (isLogin) {
+      // Tentative de connexion
       const success = await login(email, password);
       if (success) {
+        // Rediriger vers la page d'accueil si succès
         navigate('/');
       }
     } else {
+      // Tentative d'inscription
       const success = await register(email, password, role);
       if (success) {
+        // Revenir au mode connexion et réinitialiser le formulaire
         setIsLogin(true);
         setEmail('');
         setPassword('');

@@ -27,11 +27,13 @@ const QRScanner = ({ onScan, disabled = false }) => {
         // Commencer à scanner
         scanQRCode();
       } catch (err) {
+        // Gérer l'erreur si la caméra n'est pas disponible
         setError('Impossible d\'accéder à la caméra: ' + err.message);
         setHasCamera(false);
       }
     };
 
+    // Lancer l'initialisation de la caméra
     startCamera();
 
     return () => {
