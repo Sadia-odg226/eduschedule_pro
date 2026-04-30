@@ -1,4 +1,4 @@
-/*CREATE DATABASE eduschedule_db;
+CREATE DATABASE eduschedule_db;
 USE eduschedule_db;
 CREATE TABLE classes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -152,7 +152,7 @@ CREATE TABLE logs_activite (
     details_json TEXT,
     ip VARCHAR(50),
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);*/
+);
 
 -- INTSER: ajout des données
 

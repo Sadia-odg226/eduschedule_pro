@@ -1,27 +1,30 @@
 <?php
-include_once "../config/database.php";
-include_once "../config/cors.php";
+header('Content-Type: application/json');
 
-$methode = $_SERVER['REQUEST_METHOD'];
+// On teste le chemin 1 (Dossier Backend)
+$path1 = __DIR__ . '/../db_config.php';
+// On teste le chemin 2 (Racine du projet)
+$path2 = __DIR__ . '/../../db_config.php';
 
-if ($methode == 'GET') {
-    $stmt = $conn->query("SELECT * FROM salles");
-    $salles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (file_exists($path1)) {
+    require_once $path1;
+} elseif (file_exists($path2)) {
+    require_once $path2;
+} else {
+    die(json_encode([
+        "error" => "Fichier introuvable",
+        "recherche_dans_Backend" => $path1,
+        "recherche_dans_Racine" => $path2
+    ]));
+}
+
+// Le reste du code...
+$sql = "SELECT * FROM salles";
+$result = $conn->query($sql);
+
+if ($result) {
+    $salles = $result->fetch_all(MYSQLI_ASSOC);
     echo json_encode($salles);
+} else {
+    echo json_encode(["error" => $conn->error]);
 }
-
-if ($methode == 'POST') {
-    $data = json_decode(file_get_contents("php://input"));
-    $stmt = $conn->prepare(
-        "INSERT INTO salles 
-         (code, capacite, equipements, batiment) 
-         VALUES (:code, :capacite, :equipements, :batiment)"
-    );
-    $stmt->execute([
-        ':code' => $data->code,
-        ':capacite' => $data->capacite,
-        ':equipements' => $data->equipements,
-        ':batiment' => $data->batiment
-    ]);
-}
-?>
