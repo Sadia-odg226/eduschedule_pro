@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-function EmploiTempsPage() {
+export default function EmploiTempsPage() {
   const [creneaux, setCreneaux] = useState([]);
   const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
   useEffect(() => {
-    fetch("http://localhost/eduschedule_pro/Backend/api/emploi_temps.php")
+    fetch("http://localhost/Backend/api/emploi_temps.php")
       .then((res) => res.json())
       .then((data) => setCreneaux(data))
       .catch((err) => console.error(err));
