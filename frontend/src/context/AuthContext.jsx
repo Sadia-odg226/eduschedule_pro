@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       // Faire une requête au serveur pour vérifier les identifiants
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/auth.php', {
+      const response = await fetch('http://localhost/Backend/api/auth.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       // Envoyer les données d'inscription au serveur
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/auth.php', {
+      const response = await fetch('http://localhost/Backend/api/auth.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
