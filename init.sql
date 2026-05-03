@@ -1,4 +1,4 @@
-USE eduschedule_db;
+/*USE eduschedule_db;
 
 CREATE TABLE classes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -155,7 +155,7 @@ CREATE TABLE logs_activite (
     ip VARCHAR(50),
     date_heure TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+*/
 INSERT INTO classes (code, libelle, niveau) VALUES
 ('L1', 'Licence 1 RIT', 'L1'),
 ('L2', 'Licence 2 RIT', 'L2'),
@@ -167,15 +167,15 @@ INSERT INTO matieres (code, libelle) VALUES
 ('WEB', 'Développement Web');
 
 INSERT INTO utilisateurs (email, mot_de_passe_hash, role) VALUES
-('admin@eduschedule.com', MD5('admin123'), 'admin'),
-('ali@mail.com', MD5('password123'), 'enseignant'),
-('mariam@mail.com', MD5('password123'), 'enseignant'),
-('paul@mail.com', MD5('password123'), 'enseignant'),
-('jean@mail.com', MD5('password123'), 'enseignant'),
-('awa@mail.com', MD5('password123'), 'enseignant'),
-('delegue.l1@mail.com', MD5('delegue123'), 'delegue'),
-('delegue.l2@mail.com', MD5('delegue123'), 'delegue'),
-('delegue.l3@mail.com', MD5('delegue123'), 'delegue');
+('admin@eduschedule.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
+('ali@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant'),
+('mariam@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant'),
+('paul@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant'),
+('jean@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant'),
+('awa@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant'),
+('delegue.l1@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'delegue'),
+('delegue.l2@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'delegue'),
+('delegue.l3@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'delegue');
 
 INSERT INTO enseignants (matricule, nom, prenom, email, statut, taux_horaire) VALUES
 ('ENS001', 'Traore', 'Ali', 'ali@mail.com', 'vacataire', 5000),
