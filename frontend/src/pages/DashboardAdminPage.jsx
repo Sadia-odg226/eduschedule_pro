@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 import Layout from "../components/Layout"
+import { getEnseignants } from "../services/api"
 
 export default function DashboardAdminPage() {
   const { user } = useContext(AuthContext)

@@ -1,10 +1,20 @@
 <?php
+require_once '../config/cors.php';
+require_once '../config/database.php';
 header("Content-Type: application/json");
 
-// Simulation de données
-$classes = [
-    ["id" => 1, "nom" => "Ingénieur des Travaux - RT", "niveau" => "L3"],
-    ["id" => 2, "nom" => "Génie Électrique", "niveau" => "L2"]
-];
+$method = $_SERVER['REQUEST_METHOD'];
 
-echo json_encode($classes);
+if ($method === 'GET') {
+    $result = $conn->query("SELECT * FROM classes");
+    $classes = [];
+    while ($row = $result->fetch_assoc()) {
+        $classes[] = $row;
+    }
+    echo json_encode(["success" => true, "data" => $classes]);
+} else {
+    echo json_encode(["error" => "Méthode non supportée"]);
+}
+
+$conn->close();
+?>

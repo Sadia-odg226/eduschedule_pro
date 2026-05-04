@@ -1,4 +1,6 @@
 <?php
+require_once '../config/cors.php';
+require_once '../config/database.php';
 header('Content-Type: application/json');
 
 // On teste le chemin 1 (Dossier Backend)

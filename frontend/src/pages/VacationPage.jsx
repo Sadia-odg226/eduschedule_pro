@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 import Layout from "../components/Layout"
+import { getVacations } from "../services/api"
 
 export default function VacationPage() {
   const { user } = useContext(AuthContext)
@@ -8,14 +9,13 @@ export default function VacationPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("http://localhost/Backend/api/vacations.php")
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setVacations(data.data)
-        }
-        setLoading(false)
-      })
+    getVacations()
+  .then(data => {
+    if (data.success) {
+      setVacations(data.data)
+    }
+    setLoading(false)
+  })
       .catch(err => {
         console.error(err)
         setLoading(false)

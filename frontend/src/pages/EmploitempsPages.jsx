@@ -1,41 +1,74 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
+import { getEmploiTemps, getClasses } from "../services/api"
+import Layout from "../components/Layout"
 
 export default function EmploiTempsPage() {
-  const [creneaux, setCreneaux] = useState([]);
-  const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+  const [creneaux, setCreneaux] = useState([])
+  const [classes, setClasses] = useState([])
+  const [classeSelectionnee, setClasseSelectionnee] = useState("")
+  const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 
   useEffect(() => {
-    fetch("http://localhost/Backend/api/emploi_temps.php")
-      .then((res) => res.json())
-      .then((data) => setCreneaux(data))
-      .catch((err) => console.error(err));
-  }, []);
+    getClasses().then(data => {
+      if (data.success) setClasses(data.data)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (classeSelectionnee) {
+      getEmploiTemps(classeSelectionnee).then(data => {
+        if (data.success) setCreneaux(data.data)
+      })
+    }
+  }, [classeSelectionnee])
 
   return (
-    <div className="container mt-4">
-      <h2>Emploi du Temps</h2>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            {jours.map((jour) => (
-              <th key={jour}>{jour}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {jours.map((jour) => (
-              <td key={jour}>
-                {creneaux
-                  .filter((c) => c.jour === jour)
-                  .map((c) => (
-                    <div key={c.id}>{c.id_matiere}</div>
-                  ))}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
+    <Layout>
+      <h3 className="mb-4">📅 Emploi du Temps</h3>
+
+      <div className="mb-3">
+        <select
+          className="form-select w-auto"
+          value={classeSelectionnee}
+          onChange={(e) => setClasseSelectionnee(e.target.value)}
+        >
+          <option value=""> Choisir une classe </option>
+          {classes.map(c => (
+            <option key={c.id} value={c.id}>{c.nom || c.libelle}</option>
+          ))}
+        </select>
+      </div>
+
+      {classeSelectionnee && (
+        <div className="table-responsive">
+          <table className="table table-bordered text-center">
+            <thead className="table-primary">
+              <tr>
+                <th>Heure</th>
+                {jours.map(j => <th key={j}>{j}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {creneaux.length === 0 ? (
+                <tr>
+                  <td colSpan="7">Aucun créneau disponible</td>
+                </tr>
+              ) : (
+                creneaux.map(c => (
+                  <tr key={c.id}>
+                    <td>{c.heure_debut} - {c.heure_fin}</td>
+                    {jours.map(j => (
+                      <td key={j}>
+                        {c.jour === j ? c.matiere : ""}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Layout>
+  )
 }
