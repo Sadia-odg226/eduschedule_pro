@@ -27,11 +27,11 @@ const PointagePage = () => {
     setLoading(true);
     try {
       // Appeler l'API pour récupérer les créneaux
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/creneaux.php');
+      const response = await fetch('http://localhost/Backend/api/creneaux.php');
       const data = await response.json();
       
       // Vérifier que c'est un tableau avant de stocker
-      setCreneaux(Array.isArray(data) ? data : []);
+      setCreneaux(Array.isArray(data) ? data : (data.data || []));
     } catch (err) {
       setError('Erreur lors du chargement des créneaux: ' + err.message);
     } finally {
@@ -41,7 +41,7 @@ const PointagePage = () => {
 
   const fetchPointages = async (creneauId) => {
     try {
-      const response = await fetch(`http://localhost/eduschedule_pro/Backend/api/pointages.php?id_creneau=${creneauId}`);
+      const response = await fetch(`http://localhost/Backend/api/pointages.php?id_creneau=${creneauId}`);
       const data = await response.json();
       setPointages(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -62,7 +62,7 @@ const PointagePage = () => {
     }
 
     try {
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/pointages.php', {
+      const response = await fetch('http://localhost/Backend/api/pointages.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,21 +128,28 @@ const PointagePage = () => {
                 <p className="text-gray-600">Aucun créneau disponible</p>
               ) : (
                 creneaux.map((creneau) => (
-                  <button
-                    key={creneau.id}
-                    onClick={() => handleSelectCreneau(creneau)}
-                    className={`w-full p-3 rounded-lg text-left transition ${
-                      selectedCreneau?.id === creneau.id
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200'
-                    }`}
-                  >
-                    <div className="font-semibold">
-                      {creneau.jour} - {creneau.heure_debut} à {creneau.heure_fin}
-                    </div>
-                    <div className="text-sm opacity-75">{creneau.matiere}</div>
-                  </button>
-                ))
+  <div key={creneau.id} className="mb-2">
+    <button
+      onClick={() => handleSelectCreneau(creneau)}
+      className={`w-full p-3 rounded-lg text-left transition ${
+        selectedCreneau?.id === creneau.id
+          ? 'bg-blue-500 text-white'
+          : 'bg-gray-100 hover:bg-gray-200'
+      }`}
+    >
+      <div className="font-semibold">
+        {creneau.jour} - {creneau.heure_debut} à {creneau.heure_fin}
+      </div>
+      <div className="text-sm opacity-75">{creneau.matiere}</div>
+    </button>
+    <button
+      onClick={() => window.open(`http://localhost/Backend/utils/qrcode.php?id_creneau=${creneau.id}`)}
+      className="btn btn-sm btn-success mt-1 w-100"
+    >
+      Voir QR-Code
+    </button>
+  </div>
+))
               )}
             </div>
           </div>

@@ -2,18 +2,19 @@
 require_once '../config/cors.php';
 require_once '../config/database.php';
 header("Content-Type: application/json");
-require_once '../db_config.php'; 
 
-try {
-    // On récupère tous les enseignants de la table
-    $requete = $pdo->query("SELECT * FROM enseignants");
-    $resultats = $requete->fetchAll(PDO::FETCH_ASSOC);
+$method = $_SERVER['REQUEST_METHOD'];
 
-    // On affiche le résultat en JSON
-    echo json_encode($resultats);
-
-} catch (Exception $e) {
-    // Si la table n'existe pas ou s'il y a une erreur SQL
-    echo json_encode(["erreur" => $e->getMessage()]);
+if ($method === 'GET') {
+    $result = $conn->query("SELECT * FROM enseignants");
+    $enseignants = [];
+    while ($row = $result->fetch_assoc()) {
+        $enseignants[] = $row;
+    }
+    echo json_encode(["success" => true, "data" => $enseignants]);
+} else {
+    echo json_encode(["error" => "Méthode non supportée"]);
 }
+
+$conn->close();
 ?>

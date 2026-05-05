@@ -3,10 +3,18 @@ require_once '../config/cors.php';
 require_once '../config/database.php';
 header("Content-Type: application/json");
 
-$matieres = [
-    ["id" => 1, "nom" => "Réseaux Mobiles", "code" => "RT301"],
-    ["id" => 2, "nom" => "Sécurité Informatique", "code" => "RT305"]
-];
+$method = $_SERVER['REQUEST_METHOD'];
 
-echo json_encode($matieres);
+if ($method === 'GET') {
+    $result = $conn->query("SELECT * FROM matieres");
+    $matieres = [];
+    while ($row = $result->fetch_assoc()) {
+        $matieres[] = $row;
+    }
+    echo json_encode(["success" => true, "data" => $matieres]);
+} else {
+    echo json_encode(["error" => "Méthode non supportée"]);
+}
+
+$conn->close();
 ?>

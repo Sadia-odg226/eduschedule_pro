@@ -39,9 +39,9 @@ const CahierTextePage = () => {
   const fetchCahiers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/cahiers.php');
+      const response = await fetch('http://localhost/Backend/api/cahiers.php');
       const data = await response.json();
-      setCahiers(Array.isArray(data) ? data : []);
+      setCahiers(Array.isArray(data) ? data : (data || []));
     } catch (err) {
       setError('Erreur lors du chargement des cahiers: ' + err.message);
     } finally {
@@ -51,7 +51,7 @@ const CahierTextePage = () => {
 
   const fetchCreneaux = async () => {
     try {
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/creneaux.php');
+      const response = await fetch('http://localhost/Backend/api/creneaux.php');
       const data = await response.json();
       setCreneaux(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -87,7 +87,7 @@ const CahierTextePage = () => {
         ? { ...formData, id: selectedCahier.id }
         : formData;
 
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/cahiers.php', {
+      const response = await fetch('http://localhost/Backend/api/cahiers.php', {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const CahierTextePage = () => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce cahier?')) return;
 
     try {
-      const response = await fetch('http://localhost/eduschedule_pro/Backend/api/cahiers.php', {
+      const response = await fetch('http://localhost/Backend/api/cahiers.php', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -182,10 +182,11 @@ const CahierTextePage = () => {
                 heure_fin_reelle: '',
               });
             }}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-          >
-            {showForm ? 'Annuler' : 'Nouveau cahier'}
-          </button>
+           style={{ backgroundColor: "rgb(13, 110, 253)", color: "white" }}
+  className="font-bold py-2 px-4 rounded hover:opacity-90"
+>
+  {showForm ? 'Annuler' : 'Nouveau cahier'}
+</button>
         </div>
 
         {error && (
@@ -343,13 +344,15 @@ const CahierTextePage = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(cahier)}
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-sm"
+                    style={{ backgroundColor: "rgb(13, 110, 253)", color: "white" }}
+className="flex-1 font-bold py-1 px-2 rounded text-sm hover:opacity-90"
                   >
                     Éditer
                   </button>
                   <button
                     onClick={() => handleDelete(cahier.id)}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                    style={{ backgroundColor: "rgb(13, 110, 253)", color: "white" }}
+className="flex-1 font-bold py-1 px-2 rounded text-sm hover:opacity-90"
                   >
                     Supprimer
                   </button>
@@ -361,6 +364,7 @@ const CahierTextePage = () => {
       </div>
     </div>
   );
+  
 };
 
 export default CahierTextePage;
